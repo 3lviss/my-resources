@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { checkAuth } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +19,7 @@ export default function Login() {
       const data = await auth.login(email);
 
       if (data.status_code === 200) {
+        await checkAuth();
         navigate("/dashboard");
       } else {
         setError(data.message || "Login failed");
