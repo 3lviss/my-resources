@@ -11,18 +11,23 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dashboard-container">
-      <h1>Dashboard</h1>
-      {user && (
-        <div className="user-info">
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>User ID:</strong> {user.id}</p>
-          <p><strong>Created:</strong> {new Date(user.created_at).toLocaleString()}</p>
-        </div>
-      )}
-      <button onClick={handleLogout} className="logout-btn">
-        Logout
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="max-w-xl w-full p-8 bg-gray-800 rounded-lg">
+        <h1 className="text-3xl font-bold text-white text-center mb-6">Dashboard</h1>
+        {user && (
+          <div className="bg-gray-700 p-4 rounded mb-6">
+            <p className="text-gray-300 mb-2"><span className="font-semibold text-white">Email:</span> {user.email}</p>
+            <p className="text-gray-300 mb-2"><span className="font-semibold text-white">User ID:</span> {user.id}</p>
+            <p className="text-gray-300"><span className="font-semibold text-white">Created:</span> {new Date(user.created_at).toLocaleString()}</p>
+          </div>
+        )}
+        <button
+          onClick={handleLogout}
+          className="w-full py-3 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
