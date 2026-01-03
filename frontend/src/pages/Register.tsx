@@ -49,13 +49,13 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="mt-6 text-center text-gray-400">
-          Already have an account? <Link to="/login" className="text-indigo-400 hover:text-indigo-300">Login</Link>
+          Already have an account? <Link to="/login" className="text-indigo-400 hover:text-indigo-300 cursor-pointer">Login</Link>
         </p>
       </div>
     </div>

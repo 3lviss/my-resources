@@ -52,13 +52,13 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="mt-6 text-center text-gray-400">
-          Don't have an account? <Link to="/register" className="text-indigo-400 hover:text-indigo-300">Register</Link>
+          Don't have an account? <Link to="/register" className="text-indigo-400 hover:text-indigo-300 cursor-pointer">Register</Link>
         </p>
       </div>
     </div>

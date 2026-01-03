@@ -67,7 +67,7 @@ export default function Dashboard() {
             <span className="text-gray-400">{user?.email}</span>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors"
+              className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
             >
               Logout
             </button>
@@ -79,7 +79,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-white">Resources</h2>
             <button
               onClick={() => console.log("Create new resource")}
-              className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2 cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -121,7 +121,7 @@ export default function Dashboard() {
                             href={resource.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-indigo-400 hover:text-indigo-300"
+                            className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
                           >
                             Link
                           </a>
@@ -142,7 +142,7 @@ export default function Dashboard() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => console.log("Edit", resource.id)}
-                            className="p-2 text-gray-400 hover:text-indigo-400 transition-colors"
+                            className="p-2 text-gray-400 hover:text-indigo-400 transition-colors cursor-pointer"
                             title="Edit"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -151,7 +151,7 @@ export default function Dashboard() {
                           </button>
                           <button
                             onClick={() => console.log("Delete", resource.id)}
-                            className="p-2 text-red-400/70 hover:text-red-400 transition-colors"
+                            className="p-2 text-red-400/70 hover:text-red-400 transition-colors cursor-pointer"
                             title="Delete"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -176,7 +176,7 @@ export default function Dashboard() {
                 <button
                   onClick={() => setPage(page - 1)}
                   disabled={page === 1}
-                  className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   Previous
                 </button>
@@ -184,7 +184,7 @@ export default function Dashboard() {
                   <button
                     key={p}
                     onClick={() => setPage(p)}
-                    className={`px-3 py-1 rounded transition-colors ${
+                    className={`px-3 py-1 rounded transition-colors cursor-pointer ${
                       p === page
                         ? "bg-indigo-600 text-white"
                         : "bg-gray-700 text-white hover:bg-gray-600"
@@ -196,7 +196,7 @@ export default function Dashboard() {
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={page === meta.total_pages}
-                  className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   Next
                 </button>
