@@ -43,3 +43,7 @@ export const auth = {
 
   me: () => api("/auth/me"),
 };
+
+export const resources = {
+  getAll: (page: number = 1) => api(`/resources?page=${page}`),
+};
