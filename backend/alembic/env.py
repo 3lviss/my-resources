@@ -13,7 +13,7 @@ load_dotenv()
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.database import Base
-from app.models import User
+from app.models import User, Resource
 
 config = context.config
 
