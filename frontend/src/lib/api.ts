@@ -46,4 +46,6 @@ export const auth = {
 
 export const resources = {
   getAll: (page: number = 1) => api(`/resources?page=${page}`),
+  getById: (id: string) => api(`/resources/${id}`),
+  getTypes: () => api<string[]>("/resources/types"),
 };

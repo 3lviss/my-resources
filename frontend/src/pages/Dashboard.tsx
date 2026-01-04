@@ -141,7 +141,7 @@ export default function Dashboard() {
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => console.log("Edit", resource.id)}
+                            onClick={() => navigate(`/resources/${resource.id}`)}
                             className="p-2 text-gray-400 hover:text-indigo-400 transition-colors cursor-pointer"
                             title="Edit"
                           >

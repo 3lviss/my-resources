@@ -5,6 +5,7 @@ import GuestRoute from "./components/GuestRoute";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ResourceEdit from "./pages/ResourceEdit";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
           <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/resources/:id" element={<ProtectedRoute><ResourceEdit /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

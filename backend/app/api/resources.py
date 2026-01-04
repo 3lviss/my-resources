@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, Request, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -5,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import verify_token
 from app.models import User, Resource
+from app.models.resource import ResourceType
 from app.schemas import ApiResponse, ResourceOut
 
 router = APIRouter(prefix="/resources", tags=["resources"])
@@ -50,4 +52,46 @@ def get_resources(
         },
         message="Resources retrieved"
     )
+    return JSONResponse(status_code=200, content=response.model_dump())
+
+
+@router.get("/types")
+def get_resource_types():
+    types = [t.value for t in ResourceType]
+    response = ApiResponse.success(data=types, message="Resource types retrieved")
+    return JSONResponse(status_code=200, content=response.model_dump())
+
+
+@router.get("/{resource_id}")
+def get_resource(
+    resource_id: UUID,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    token = request.cookies.get("access_token")
+    if not token:
+        response = ApiResponse.error(message="Not authenticated", status_code=401)
+        return JSONResponse(status_code=401, content=response.model_dump())
+
+    payload = verify_token(token)
+    if not payload:
+        response = ApiResponse.error(message="Invalid token", status_code=401)
+        return JSONResponse(status_code=401, content=response.model_dump())
+
+    user = db.query(User).filter(User.id == payload.get("sub")).first()
+    if not user:
+        response = ApiResponse.error(message="User not found", status_code=404)
+        return JSONResponse(status_code=404, content=response.model_dump())
+
+    resource = db.query(Resource).filter(
+        Resource.id == resource_id,
+        Resource.user_id == user.id
+    ).first()
+
+    if not resource:
+        response = ApiResponse.error(message="Resource not found", status_code=404)
+        return JSONResponse(status_code=404, content=response.model_dump())
+
+    resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
+    response = ApiResponse.success(data=resource_out, message="Resource retrieved")
     return JSONResponse(status_code=200, content=response.model_dump())
