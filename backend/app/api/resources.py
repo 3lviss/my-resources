@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.core.security import verify_token
 from app.models import User, Resource
 from app.models.resource import ResourceType
-from app.schemas import ApiResponse, ResourceOut
+from app.schemas import ApiResponse, ResourceOut, ResourceUpdate
 
 router = APIRouter(prefix="/resources", tags=["resources"])
 
@@ -94,4 +94,50 @@ def get_resource(
 
     resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
     response = ApiResponse.success(data=resource_out, message="Resource retrieved")
+    return JSONResponse(status_code=200, content=response.model_dump())
+
+
+@router.put("/{resource_id}")
+def update_resource(
+    resource_id: UUID,
+    update_data: ResourceUpdate,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    token = request.cookies.get("access_token")
+    if not token:
+        response = ApiResponse.error(message="Not authenticated", status_code=401)
+        return JSONResponse(status_code=401, content=response.model_dump())
+
+    payload = verify_token(token)
+    if not payload:
+        response = ApiResponse.error(message="Invalid token", status_code=401)
+        return JSONResponse(status_code=401, content=response.model_dump())
+
+    user = db.query(User).filter(User.id == payload.get("sub")).first()
+    if not user:
+        response = ApiResponse.error(message="User not found", status_code=404)
+        return JSONResponse(status_code=404, content=response.model_dump())
+
+    resource = db.query(Resource).filter(
+        Resource.id == resource_id,
+        Resource.user_id == user.id
+    ).first()
+
+    if not resource:
+        response = ApiResponse.error(message="Resource not found", status_code=404)
+        return JSONResponse(status_code=404, content=response.model_dump())
+
+    # Update resource fields
+    resource.title = update_data.title
+    resource.type = update_data.type
+    resource.url = update_data.url
+    resource.description = update_data.description
+    resource.use_case = update_data.use_case
+
+    db.commit()
+    db.refresh(resource)
+
+    resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
+    response = ApiResponse.success(data=resource_out, message="Resource updated successfully")
     return JSONResponse(status_code=200, content=response.model_dump())

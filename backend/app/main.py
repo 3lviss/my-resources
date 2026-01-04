@@ -1,13 +1,17 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 from dotenv import load_dotenv
 
 from app.api import auth_router, resources_router
+from app.core.exceptions import validation_exception_handler
 
 load_dotenv()
 
 app = FastAPI(title="API")
+
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 cors_origins = os.getenv("CORS_ORIGINS", "").split(",")
 

@@ -44,8 +44,21 @@ export const auth = {
   me: () => api("/auth/me"),
 };
 
+export interface ResourceUpdateData {
+  title: string;
+  type: string;
+  url: string | null;
+  description: string;
+  use_case: string | null;
+}
+
 export const resources = {
   getAll: (page: number = 1) => api(`/resources?page=${page}`),
   getById: (id: string) => api(`/resources/${id}`),
   getTypes: () => api<string[]>("/resources/types"),
+  update: (id: string, data: ResourceUpdateData) =>
+    api(`/resources/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
 };

@@ -21,6 +21,9 @@ export default function ResourceEdit() {
   const [formData, setFormData] = useState<Resource | null>(null);
   const [originalData, setOriginalData] = useState<Resource | null>(null);
   const [resourceTypes, setResourceTypes] = useState<string[]>([]);
+  const [updating, setUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,8 +76,36 @@ export default function ResourceEdit() {
     );
   };
 
-  const handleUpdate = () => {
-    console.log("Update resource", formData);
+  const handleUpdate = async () => {
+    if (!formData || !id) return;
+
+    setUpdating(true);
+    setUpdateError(null);
+    setSuccessMessage(null);
+
+    try {
+      const response = await resources.update(id, {
+        title: formData.title,
+        type: formData.type,
+        url: formData.url,
+        description: formData.description,
+        use_case: formData.use_case,
+      });
+
+      if (response.status_code === 200) {
+        const updatedData = response.data as Resource;
+        setFormData(updatedData);
+        setOriginalData(updatedData);
+        setSuccessMessage("Resource updated successfully");
+        setTimeout(() => setSuccessMessage(null), 3000);
+      } else {
+        setUpdateError(response.message || "Failed to update resource");
+      }
+    } catch (err) {
+      setUpdateError("Failed to update resource");
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) {
@@ -208,13 +239,26 @@ export default function ResourceEdit() {
               </div>
             </div>
 
+            {updateError && (
+              <div className="p-3 bg-red-500/20 border border-red-500 rounded text-red-400 text-sm">
+                {updateError}
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="p-3 bg-green-500/20 border border-green-500 rounded text-green-400 text-sm">
+                {successMessage}
+              </div>
+            )}
+
             {isDirty() && (
               <div className="pt-4">
                 <button
                   onClick={handleUpdate}
-                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer"
+                  disabled={updating}
+                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Update Resource
+                  {updating ? "Updating..." : "Update Resource"}
                 </button>
               </div>
             )}
