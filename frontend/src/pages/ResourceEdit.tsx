@@ -260,14 +260,6 @@ export default function ResourceEdit() {
               </div>
             </div>
 
-            {toast && (
-              <Toast
-                message={toast.message}
-                type={toast.type}
-                onClose={() => setToast(null)}
-              />
-            )}
-
             <div className="pt-4 flex justify-center gap-3">
               <button
                 onClick={() => setShowDeleteModal(true)}
@@ -294,6 +286,16 @@ export default function ResourceEdit() {
             onCancel={() => setShowDeleteModal(false)}
             isLoading={deleting}
           />
+        )}
+
+        {toast && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast(null)}
+            />
+          </div>
         )}
       </div>
     </div>

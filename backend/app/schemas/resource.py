@@ -70,6 +70,11 @@ class ResourceUpdate(BaseModel):
         return v
 
 
+class ResourceCreate(ResourceUpdate):
+    """Same validation as ResourceUpdate"""
+    pass
+
+
 class ResourceOut(BaseModel):
     id: UUID
     user_id: UUID

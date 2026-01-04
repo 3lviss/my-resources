@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models import User, Resource
 from app.models.resource import ResourceType
-from app.schemas import ApiResponse, ResourceOut, ResourceUpdate
+from app.schemas import ApiResponse, ResourceOut, ResourceUpdate, ResourceCreate
 
 
 def get_user(request: Request, db: Session = Depends(get_db)) -> User:
@@ -50,6 +50,30 @@ def get_resource_types():
     types = [t.value for t in ResourceType]
     response = ApiResponse.success(data=types, message="Resource types retrieved")
     return JSONResponse(status_code=200, content=response.model_dump())
+
+
+@router.post("")
+def create_resource(
+    create_data: ResourceCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_user)
+):
+    resource = Resource(
+        user_id=user.id,
+        title=create_data.title,
+        type=create_data.type,
+        url=create_data.url,
+        description=create_data.description,
+        use_case=create_data.use_case
+    )
+
+    db.add(resource)
+    db.commit()
+    db.refresh(resource)
+
+    resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
+    response = ApiResponse.success(data=resource_out, message="Resource created successfully", status_code=201)
+    return JSONResponse(status_code=201, content=response.model_dump())
 
 
 @router.get("/{resource_id}")

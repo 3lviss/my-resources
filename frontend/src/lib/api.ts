@@ -56,6 +56,11 @@ export const resources = {
   getAll: (page: number = 1) => api(`/resources?page=${page}`),
   getById: (id: string) => api(`/resources/${id}`),
   getTypes: () => api<string[]>("/resources/types"),
+  create: (data: ResourceUpdateData) =>
+    api("/resources", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   update: (id: string, data: ResourceUpdateData) =>
     api(`/resources/${id}`, {
       method: "PUT",

@@ -105,7 +105,7 @@ export default function Dashboard() {
           <div className="p-4 border-b border-gray-700 flex justify-between items-center">
             <h2 className="text-xl font-semibold text-white">Resources</h2>
             <button
-              onClick={() => console.log("Create new resource")}
+              onClick={() => navigate("/resources/new")}
               className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2 cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
