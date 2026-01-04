@@ -61,4 +61,8 @@ export const resources = {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+  delete: (id: string) =>
+    api(`/resources/${id}`, {
+      method: "DELETE",
+    }),
 };

@@ -101,3 +101,25 @@ def update_resource(
     resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
     response = ApiResponse.success(data=resource_out, message="Resource updated successfully")
     return JSONResponse(status_code=200, content=response.model_dump())
+
+
+@router.delete("/{resource_id}")
+def delete_resource(
+    resource_id: UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_user)
+):
+    resource = db.query(Resource).filter(
+        Resource.id == resource_id,
+        Resource.user_id == user.id
+    ).first()
+
+    if not resource:
+        response = ApiResponse.error(message="Resource not found", status_code=404)
+        return JSONResponse(status_code=404, content=response.model_dump())
+
+    db.delete(resource)
+    db.commit()
+
+    response = ApiResponse.success(data=None, message="Resource deleted successfully")
+    return JSONResponse(status_code=200, content=response.model_dump())

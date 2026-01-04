@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { resources } from "../lib/api";
+import Toast from "../components/Toast";
+import ConfirmModal from "../components/ConfirmModal";
 
 interface Resource {
   id: string;
@@ -28,6 +30,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({ total: 0, total_pages: 1, per_page: 10 });
+  const [deleteTarget, setDeleteTarget] = useState<Resource | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const fetchResources = async (currentPage: number) => {
     setLoading(true);
@@ -56,6 +61,26 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await logout();
     navigate("/login");
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
+    try {
+      const response = await resources.delete(deleteTarget.id);
+      if (response.status_code === 200) {
+        setToast({ message: "Resource deleted successfully", type: "success" });
+        fetchResources(page);
+      } else {
+        setToast({ message: response.message || "Failed to delete resource", type: "error" });
+      }
+    } catch (err) {
+      setToast({ message: "Failed to delete resource", type: "error" });
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
   };
 
   return (
@@ -150,7 +175,7 @@ export default function Dashboard() {
                             </svg>
                           </button>
                           <button
-                            onClick={() => console.log("Delete", resource.id)}
+                            onClick={() => setDeleteTarget(resource)}
                             className="p-2 text-red-400/70 hover:text-red-400 transition-colors cursor-pointer"
                             title="Delete"
                           >
@@ -204,6 +229,26 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+
+        {toast && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast(null)}
+            />
+          </div>
+        )}
+
+        {deleteTarget && (
+          <ConfirmModal
+            title="Delete Resource"
+            message={`Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`}
+            onConfirm={handleDelete}
+            onCancel={() => setDeleteTarget(null)}
+            isLoading={deleting}
+          />
+        )}
       </div>
     </div>
   );

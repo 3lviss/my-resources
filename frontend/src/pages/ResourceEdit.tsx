@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resources } from "../lib/api";
+import Toast from "../components/Toast";
+import ConfirmModal from "../components/ConfirmModal";
 
 interface Resource {
   id: string;
@@ -22,8 +24,9 @@ export default function ResourceEdit() {
   const [originalData, setOriginalData] = useState<Resource | null>(null);
   const [resourceTypes, setResourceTypes] = useState<string[]>([]);
   const [updating, setUpdating] = useState(false);
-  const [updateError, setUpdateError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,8 +83,7 @@ export default function ResourceEdit() {
     if (!formData || !id) return;
 
     setUpdating(true);
-    setUpdateError(null);
-    setSuccessMessage(null);
+    setToast(null);
 
     try {
       const response = await resources.update(id, {
@@ -96,15 +98,34 @@ export default function ResourceEdit() {
         const updatedData = response.data as Resource;
         setFormData(updatedData);
         setOriginalData(updatedData);
-        setSuccessMessage("Resource updated successfully");
-        setTimeout(() => setSuccessMessage(null), 3000);
+        setToast({ message: "Resource updated successfully", type: "success" });
       } else {
-        setUpdateError(response.message || "Failed to update resource");
+        setToast({ message: response.message || "Failed to update resource", type: "error" });
       }
     } catch (err) {
-      setUpdateError("Failed to update resource");
+      setToast({ message: "Failed to update resource", type: "error" });
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+
+    setDeleting(true);
+    try {
+      const response = await resources.delete(id);
+      if (response.status_code === 200) {
+        navigate("/dashboard");
+      } else {
+        setToast({ message: response.message || "Failed to delete resource", type: "error" });
+        setShowDeleteModal(false);
+      }
+    } catch (err) {
+      setToast({ message: "Failed to delete resource", type: "error" });
+      setShowDeleteModal(false);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -239,31 +260,41 @@ export default function ResourceEdit() {
               </div>
             </div>
 
-            {updateError && (
-              <div className="p-3 bg-red-500/20 border border-red-500 rounded text-red-400 text-sm">
-                {updateError}
-              </div>
+            {toast && (
+              <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast(null)}
+              />
             )}
 
-            {successMessage && (
-              <div className="p-3 bg-green-500/20 border border-green-500 rounded text-green-400 text-sm">
-                {successMessage}
-              </div>
-            )}
-
-            {isDirty() && (
-              <div className="pt-4">
-                <button
-                  onClick={handleUpdate}
-                  disabled={updating}
-                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {updating ? "Updating..." : "Update Resource"}
-                </button>
-              </div>
-            )}
+            <div className="pt-4 flex justify-center gap-3">
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
+              >
+                Delete Resource
+              </button>
+              <button
+                onClick={handleUpdate}
+                disabled={!isDirty() || updating}
+                className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {updating ? "Updating..." : "Update Resource"}
+              </button>
+            </div>
           </div>
         </div>
+
+        {showDeleteModal && (
+          <ConfirmModal
+            title="Delete Resource"
+            message={`Are you sure you want to delete "${formData.title}"? This action cannot be undone.`}
+            onConfirm={handleDelete}
+            onCancel={() => setShowDeleteModal(false)}
+            isLoading={deleting}
+          />
+        )}
       </div>
     </div>
   );
