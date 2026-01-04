@@ -2,6 +2,8 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import jwt, JWTError
+from fastapi import Request, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -24,3 +26,21 @@ def verify_token(token: str) -> Optional[dict]:
         return payload
     except JWTError:
         return None
+
+
+def get_current_user(request: Request, db: Session):
+    from app.models import User
+
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    user = db.query(User).filter(User.id == payload.get("sub")).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return user

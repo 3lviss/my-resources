@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
@@ -13,3 +13,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         message = message.replace("Value error, ", "")
     response = ApiResponse.error(message=message, status_code=400)
     return JSONResponse(status_code=400, content=response.model_dump())
+
+
+async def http_exception_handler(request: Request, exc: HTTPException):
+    response = ApiResponse.error(message=exc.detail, status_code=exc.status_code)
+    return JSONResponse(status_code=exc.status_code, content=response.model_dump())

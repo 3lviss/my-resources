@@ -4,42 +4,32 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import verify_token
+from app.core.security import get_current_user
 from app.models import User, Resource
 from app.models.resource import ResourceType
 from app.schemas import ApiResponse, ResourceOut, ResourceUpdate
+
+
+def get_user(request: Request, db: Session = Depends(get_db)) -> User:
+    return get_current_user(request, db)
+
 
 router = APIRouter(prefix="/resources", tags=["resources"])
 
 
 @router.get("")
 def get_resources(
-    request: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(5, ge=1, le=100),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: User = Depends(get_user)
 ):
-    token = request.cookies.get("access_token")
-    if not token:
-        response = ApiResponse.error(message="Not authenticated", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    payload = verify_token(token)
-    if not payload:
-        response = ApiResponse.error(message="Invalid token", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    user = db.query(User).filter(User.id == payload.get("sub")).first()
-    if not user:
-        response = ApiResponse.error(message="User not found", status_code=404)
-        return JSONResponse(status_code=404, content=response.model_dump())
-
     query = db.query(Resource).filter(Resource.user_id == user.id)
     total = query.count()
     total_pages = (total + per_page - 1) // per_page
 
     offset = (page - 1) * per_page
-    resources = query.order_by(Resource.created_at.desc()).offset(offset).limit(per_page).all()
+    resources = query.order_by(Resource.updated_at.desc()).offset(offset).limit(per_page).all()
     resources_out = [ResourceOut.model_validate(r).model_dump(mode="json") for r in resources]
 
     response = ApiResponse.success(
@@ -65,24 +55,9 @@ def get_resource_types():
 @router.get("/{resource_id}")
 def get_resource(
     resource_id: UUID,
-    request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: User = Depends(get_user)
 ):
-    token = request.cookies.get("access_token")
-    if not token:
-        response = ApiResponse.error(message="Not authenticated", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    payload = verify_token(token)
-    if not payload:
-        response = ApiResponse.error(message="Invalid token", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    user = db.query(User).filter(User.id == payload.get("sub")).first()
-    if not user:
-        response = ApiResponse.error(message="User not found", status_code=404)
-        return JSONResponse(status_code=404, content=response.model_dump())
-
     resource = db.query(Resource).filter(
         Resource.id == resource_id,
         Resource.user_id == user.id
@@ -101,24 +76,9 @@ def get_resource(
 def update_resource(
     resource_id: UUID,
     update_data: ResourceUpdate,
-    request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: User = Depends(get_user)
 ):
-    token = request.cookies.get("access_token")
-    if not token:
-        response = ApiResponse.error(message="Not authenticated", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    payload = verify_token(token)
-    if not payload:
-        response = ApiResponse.error(message="Invalid token", status_code=401)
-        return JSONResponse(status_code=401, content=response.model_dump())
-
-    user = db.query(User).filter(User.id == payload.get("sub")).first()
-    if not user:
-        response = ApiResponse.error(message="User not found", status_code=404)
-        return JSONResponse(status_code=404, content=response.model_dump())
-
     resource = db.query(Resource).filter(
         Resource.id == resource_id,
         Resource.user_id == user.id
