@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { resources } from "../lib/api";
+import Layout from "../components/Layout";
 import Toast from "../components/Toast";
 import ConfirmModal from "../components/ConfirmModal";
 import ResourcesTable from "../components/Datatable";
@@ -26,7 +26,6 @@ interface PaginatedResponse {
 }
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [resourceList, setResourceList] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,11 +59,6 @@ export default function Dashboard() {
     fetchResources(page);
   }, [page]);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
-
   const handleDelete = async () => {
     if (!deleteTarget) return;
 
@@ -77,7 +71,7 @@ export default function Dashboard() {
       } else {
         setToast({ message: response.message || "Failed to delete resource", type: "error" });
       }
-    } catch (err) {
+    } catch {
       setToast({ message: "Failed to delete resource", type: "error" });
     } finally {
       setDeleting(false);
@@ -86,71 +80,56 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-400">{user?.email}</span>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
-            >
-              Logout
-            </button>
-          </div>
+    <Layout>
+      <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="p-4 border-b border-gray-700 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-white">Resources</h2>
+          <button
+            onClick={() => navigate("/resources/new")}
+            className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2 cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New Resource
+          </button>
         </div>
 
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-gray-700 flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">Resources</h2>
-            <button
-              onClick={() => navigate("/resources/new")}
-              className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2 cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              New Resource
-            </button>
-          </div>
+        <ResourcesTable
+          resources={resourceList}
+          loading={loading}
+          onEdit={(resource) => navigate(`/resources/${resource.id}`)}
+          onDelete={(resource) => setDeleteTarget(resource)}
+        />
 
-          <ResourcesTable
-            resources={resourceList}
-            loading={loading}
-            onEdit={(resource) => navigate(`/resources/${resource.id}`)}
-            onDelete={(resource) => setDeleteTarget(resource)}
-          />
-
-          <Pagination
-            page={page}
-            totalPages={meta.total_pages}
-            perPage={meta.per_page}
-            total={meta.total}
-            onPageChange={setPage}
-          />
-        </div>
-
-        {toast && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <Toast
-              message={toast.message}
-              type={toast.type}
-              onClose={() => setToast(null)}
-            />
-          </div>
-        )}
-
-        {deleteTarget && (
-          <ConfirmModal
-            title="Delete Resource"
-            message={`Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`}
-            onConfirm={handleDelete}
-            onCancel={() => setDeleteTarget(null)}
-            isLoading={deleting}
-          />
-        )}
+        <Pagination
+          page={page}
+          totalPages={meta.total_pages}
+          perPage={meta.per_page}
+          total={meta.total}
+          onPageChange={setPage}
+        />
       </div>
-    </div>
+
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        </div>
+      )}
+
+      {deleteTarget && (
+        <ConfirmModal
+          title="Delete Resource"
+          message={`Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleting}
+        />
+      )}
+    </Layout>
   );
 }

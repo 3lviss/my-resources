@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resources } from "../lib/api";
+import Layout from "../components/Layout";
 import Toast from "../components/Toast";
 import ConfirmModal from "../components/ConfirmModal";
 
@@ -50,7 +51,7 @@ export default function ResourceEdit() {
         if (typesResponse.status_code === 200 && typesResponse.data) {
           setResourceTypes(typesResponse.data);
         }
-      } catch (err) {
+      } catch {
         setError("Failed to fetch resource");
       } finally {
         setLoading(false);
@@ -102,7 +103,7 @@ export default function ResourceEdit() {
       } else {
         setToast({ message: response.message || "Failed to update resource", type: "error" });
       }
-    } catch (err) {
+    } catch {
       setToast({ message: "Failed to update resource", type: "error" });
     } finally {
       setUpdating(false);
@@ -121,7 +122,7 @@ export default function ResourceEdit() {
         setToast({ message: response.message || "Failed to delete resource", type: "error" });
         setShowDeleteModal(false);
       }
-    } catch (err) {
+    } catch {
       setToast({ message: "Failed to delete resource", type: "error" });
       setShowDeleteModal(false);
     } finally {
@@ -129,35 +130,11 @@ export default function ResourceEdit() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-gray-400">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error || !formData) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 mb-4">{error || "Resource not found"}</div>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
+    <Layout>
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">Resource</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Edit Resource</h1>
           <button
             onClick={() => navigate("/dashboard")}
             className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
@@ -166,138 +143,154 @@ export default function ResourceEdit() {
           </button>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="space-y-6">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
-              />
-            </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-400">Loading...</div>
+          </div>
+        ) : error || !formData ? (
+          <div className="text-center py-12">
+            <div className="text-red-400 mb-4">{error || "Resource not found"}</div>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
+            >
+              Back to Dashboard
+            </button>
+          </div>
+        ) : (
+          <div className="bg-gray-800 rounded-lg p-6">
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-2">
-                Type
-              </label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
-              >
-                {resourceTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div>
+                <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-2">
+                  Type
+                </label>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  {resourceTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label htmlFor="url" className="block text-sm font-medium text-gray-300 mb-2">
-                URL
-              </label>
-              <input
-                type="url"
-                id="url"
-                name="url"
-                value={formData.url || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
-                placeholder="https://..."
-              />
-            </div>
+              <div>
+                <label htmlFor="url" className="block text-sm font-medium text-gray-300 mb-2">
+                  URL
+                </label>
+                <input
+                  type="url"
+                  id="url"
+                  name="url"
+                  value={formData.url || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
+                  placeholder="https://..."
+                />
+              </div>
 
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={4}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 resize-none"
-              />
-            </div>
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={4}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 resize-none"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="use_case" className="block text-sm font-medium text-gray-300 mb-2">
-                Use Case
-              </label>
-              <textarea
-                id="use_case"
-                name="use_case"
-                value={formData.use_case || ""}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 resize-none"
-                placeholder="Describe when and how to use this resource..."
-              />
-            </div>
+              <div>
+                <label htmlFor="use_case" className="block text-sm font-medium text-gray-300 mb-2">
+                  Use Case
+                </label>
+                <textarea
+                  id="use_case"
+                  name="use_case"
+                  value={formData.use_case || ""}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500 resize-none"
+                  placeholder="Describe when and how to use this resource..."
+                />
+              </div>
 
-            <div className="pt-4 border-t border-gray-700">
-              <div className="text-sm text-gray-400 space-y-1">
-                <p>
-                  Created:{" "}
-                  {new Date(formData.created_at).toLocaleString("de-DE", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+              <div className="pt-4 border-t border-gray-700">
+                <div className="text-sm text-gray-400 space-y-1">
+                  <p>
+                    Created:{" "}
+                    {new Date(formData.created_at).toLocaleString("de-DE", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-center gap-3">
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
+                >
+                  Delete Resource
+                </button>
+                <button
+                  onClick={handleUpdate}
+                  disabled={!isDirty() || updating}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {updating ? "Updating..." : "Update Resource"}
+                </button>
               </div>
             </div>
-
-            <div className="pt-4 flex justify-center gap-3">
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
-              >
-                Delete Resource
-              </button>
-              <button
-                onClick={handleUpdate}
-                disabled={!isDirty() || updating}
-                className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {updating ? "Updating..." : "Update Resource"}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {showDeleteModal && (
-          <ConfirmModal
-            title="Delete Resource"
-            message={`Are you sure you want to delete "${formData.title}"? This action cannot be undone.`}
-            onConfirm={handleDelete}
-            onCancel={() => setShowDeleteModal(false)}
-            isLoading={deleting}
-          />
-        )}
-
-        {toast && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <Toast
-              message={toast.message}
-              type={toast.type}
-              onClose={() => setToast(null)}
-            />
           </div>
         )}
       </div>
-    </div>
+
+      {showDeleteModal && formData && (
+        <ConfirmModal
+          title="Delete Resource"
+          message={`Are you sure you want to delete "${formData.title}"? This action cannot be undone.`}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          isLoading={deleting}
+        />
+      )}
+
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        </div>
+      )}
+    </Layout>
   );
 }
