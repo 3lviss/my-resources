@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { resources } from "../lib/api";
-import Layout from "../components/Layout";
-import Toast from "../components/Toast";
-import ConfirmModal from "../components/ConfirmModal";
+import { resources } from "../../lib/api";
+import Layout from "../../layouts/Layout";
+import Toast from "../../components/Toast";
+import ConfirmModal from "../../components/ConfirmModal";
 
 interface Resource {
   id: string;
@@ -16,7 +16,7 @@ interface Resource {
   updated_at: string;
 }
 
-export default function ResourceEdit() {
+export default function Edit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);

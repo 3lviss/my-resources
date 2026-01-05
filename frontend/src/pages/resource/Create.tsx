@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { resources } from "../lib/api";
-import Layout from "../components/Layout";
-import Toast from "../components/Toast";
+import { resources } from "../../lib/api";
+import Layout from "../../layouts/Layout";
+import Toast from "../../components/Toast";
 
 interface FormData {
   title: string;
@@ -12,7 +12,7 @@ interface FormData {
   use_case: string;
 }
 
-export default function ResourceCreate() {
+export default function Create() {
   const navigate = useNavigate();
   const [resourceTypes, setResourceTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);

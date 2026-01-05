@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { resources } from "../lib/api";
-import Layout from "../components/Layout";
-import Toast from "../components/Toast";
-import ConfirmModal from "../components/ConfirmModal";
-import ResourcesTable from "../components/Datatable";
-import Pagination from "../components/Pagination";
+import { resources } from "../../lib/api";
+import Layout from "../../layouts/Layout";
+import Toast from "../../components/Toast";
+import ConfirmModal from "../../components/ConfirmModal";
+import ResourcesTable from "../../components/Datatable";
+import Pagination from "../../components/Pagination";
 
 interface Resource {
   id: string;
@@ -25,7 +25,7 @@ interface PaginatedResponse {
   total_pages: number;
 }
 
-export default function Dashboard() {
+export default function Index() {
   const navigate = useNavigate();
   const [resourceList, setResourceList] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
