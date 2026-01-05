@@ -17,10 +17,10 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4">
         <div className="flex justify-between items-center">
           <button
-            onClick={() => navigate("/dashboard")}
-            className="text-2xl sm:text-3xl font-bold text-white hover:text-gray-300 transition-colors cursor-pointer"
+            onClick={() => navigate("/resources")}
+            className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent hover:opacity-80 transition-opacity cursor-pointer"
           >
-            Dashboard
+            MyResources
           </button>
           <div className="relative">
             <button

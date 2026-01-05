@@ -68,7 +68,7 @@ export default function Create() {
       if (response.status_code === 201) {
         setToast({ message: "Resource created successfully", type: "success" });
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/resources");
         }, 1500);
       } else {
         setToast({ message: response.message || "Failed to create resource", type: "error" });
@@ -86,7 +86,7 @@ export default function Create() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">New Resource</h1>
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/resources")}
             className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
           >
             Back

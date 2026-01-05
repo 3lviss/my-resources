@@ -17,7 +17,7 @@ export default function GuestRoute({ children }: GuestRouteProps) {
   }
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/resources" replace />;
   }
 
   return <>{children}</>;

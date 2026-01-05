@@ -117,7 +117,7 @@ export default function Edit() {
     try {
       const response = await resources.delete(id);
       if (response.status_code === 200) {
-        navigate("/dashboard");
+        navigate("/resources");
       } else {
         setToast({ message: response.message || "Failed to delete resource", type: "error" });
         setShowDeleteModal(false);
@@ -136,7 +136,7 @@ export default function Edit() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Edit Resource</h1>
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/resources")}
             className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
           >
             Back
@@ -151,7 +151,7 @@ export default function Edit() {
           <div className="text-center py-12">
             <div className="text-red-400 mb-4">{error || "Resource not found"}</div>
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/resources")}
               className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
             >
               Back to Dashboard
