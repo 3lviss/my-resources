@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resources } from "../../lib/api";
 import Layout from "../../layouts/Layout";
+import Button from "../../components/Button";
 import Toast from "../../components/Toast";
 import ConfirmModal from "../../components/ConfirmModal";
 
@@ -135,12 +136,9 @@ export default function Edit() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Edit Resource</h1>
-          <button
-            onClick={() => navigate("/resources")}
-            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
-          >
+          <Button variant="ghost" onClick={() => navigate("/resources")}>
             Back
-          </button>
+          </Button>
         </div>
 
         {loading ? (
@@ -150,12 +148,9 @@ export default function Edit() {
         ) : error || !formData ? (
           <div className="text-center py-12">
             <div className="text-red-400 mb-4">{error || "Resource not found"}</div>
-            <button
-              onClick={() => navigate("/resources")}
-              className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
-            >
-              Back to Dashboard
-            </button>
+            <Button variant="ghost" onClick={() => navigate("/resources")}>
+              Back to Resources
+            </Button>
           </div>
         ) : (
           <div className="bg-gray-800 rounded-lg p-6">
@@ -253,19 +248,12 @@ export default function Edit() {
               </div>
 
               <div className="pt-4 flex justify-center gap-3">
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-500 transition-colors cursor-pointer"
-                >
+                <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
                   Delete Resource
-                </button>
-                <button
-                  onClick={handleUpdate}
-                  disabled={!isDirty() || updating}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                </Button>
+                <Button onClick={handleUpdate} disabled={!isDirty() || updating}>
                   {updating ? "Updating..." : "Update Resource"}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

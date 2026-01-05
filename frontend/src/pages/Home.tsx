@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Button from "../components/Button";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -14,7 +14,7 @@ export default function Home() {
       </div>
 
       <div className="max-w-2xl text-center relative z-10">
-        <h1 className="text-5xl sm:text-7xl font-extrabold mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <h1 className="text-5xl sm:text-7xl font-thin mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
           MyResources
         </h1>
 
@@ -27,26 +27,17 @@ export default function Home() {
         {!loading && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {user ? (
-              <Link
-                to="/resources"
-                className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-xl font-semibold text-lg shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
-              >
-                <span className="relative z-10">My Resources</span>
-              </Link>
+              <Button href="/resources" variant="gradient" size="lg">
+                My Resources
+              </Button>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-xl font-semibold text-lg shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
-                >
-                  <span className="relative z-10">Login</span>
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-xl font-semibold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
-                >
+                <Button href="/login" variant="gradient" size="lg">
+                  Login
+                </Button>
+                <Button href="/register" variant="glass" size="lg">
                   Register
-                </Link>
+                </Button>
               </>
             )}
           </div>

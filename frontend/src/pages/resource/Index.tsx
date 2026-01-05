@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { resources } from "../../lib/api";
 import Layout from "../../layouts/Layout";
+import Button from "../../components/Button";
 import Toast from "../../components/Toast";
 import ConfirmModal from "../../components/ConfirmModal";
 import ResourcesTable from "../../components/Datatable";
@@ -84,15 +85,15 @@ export default function Index() {
       <div className="bg-gray-800 rounded-lg overflow-hidden">
         <div className="p-4 border-b border-gray-700 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">Resources</h2>
-          <button
+          <Button
             onClick={() => navigate("/resources/new")}
-            className="px-4 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             New Resource
-          </button>
+          </Button>
         </div>
 
         <ResourcesTable

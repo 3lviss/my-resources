@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { resources } from "../../lib/api";
 import Layout from "../../layouts/Layout";
+import Button from "../../components/Button";
 import Toast from "../../components/Toast";
 
 interface FormData {
@@ -85,12 +86,9 @@ export default function Create() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">New Resource</h1>
-          <button
-            onClick={() => navigate("/resources")}
-            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
-          >
+          <Button variant="ghost" onClick={() => navigate("/resources")}>
             Back
-          </button>
+          </Button>
         </div>
 
         {loading ? (
@@ -181,13 +179,9 @@ export default function Create() {
               </div>
 
               <div className="pt-4 flex justify-center">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <Button type="submit" disabled={submitting} className="px-6">
                   {submitting ? "Creating..." : "Create Resource"}
-                </button>
+                </Button>
               </div>
             </div>
           </form>

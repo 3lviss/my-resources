@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 interface PaginationProps {
   page: number;
   totalPages: number;
@@ -24,33 +26,32 @@ export default function Pagination({
         Showing {start} - {end} of {total}
       </span>
       <div className="flex gap-2">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
-          className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
           Previous
-        </button>
+        </Button>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-          <button
+          <Button
             key={p}
+            variant={p === page ? "primary" : "ghost"}
+            size="sm"
             onClick={() => onPageChange(p)}
-            className={`px-3 py-1 rounded transition-colors cursor-pointer ${
-              p === page
-                ? "bg-indigo-600 text-white"
-                : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}
           >
             {p}
-          </button>
+          </Button>
         ))}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(page + 1)}
           disabled={page === totalPages}
-          className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

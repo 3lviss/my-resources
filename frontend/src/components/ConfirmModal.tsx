@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 interface ConfirmModalProps {
   title: string;
   message: string;
@@ -27,20 +29,12 @@ export default function ConfirmModal({
         <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
         <p className="text-gray-400 mb-6">{message}</p>
         <div className="flex gap-3 justify-end">
-          <button
-            onClick={onCancel}
-            disabled={isLoading}
-            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer disabled:opacity-50"
-          >
+          <Button variant="ghost" onClick={onCancel} disabled={isLoading}>
             {cancelText}
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button variant="danger" onClick={onConfirm} disabled={isLoading}>
             {isLoading ? "Deleting..." : confirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

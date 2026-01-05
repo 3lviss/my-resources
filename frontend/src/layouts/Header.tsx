@@ -18,7 +18,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <button
             onClick={() => navigate("/resources")}
-            className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent hover:opacity-80 transition-opacity cursor-pointer"
+            className="text-xl sm:text-3xl font-thin bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent hover:opacity-80 transition-opacity cursor-pointer"
           >
             MyResources
           </button>

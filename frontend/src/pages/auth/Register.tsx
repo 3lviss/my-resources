@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../lib/api";
+import Button from "../../components/Button";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -54,13 +55,15 @@ export default function Register() {
             />
           </div>
           {error && <p className="text-red-400 bg-red-500/20 p-3 rounded-xl mb-6 border border-red-500/30">{error}</p>}
-          <button
+          <Button
             type="submit"
+            variant="gradient"
+            size="lg"
+            fullWidth
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-xl font-semibold text-lg shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] cursor-pointer"
           >
             {loading ? "Registering..." : "Register"}
-          </button>
+          </Button>
         </form>
         <p className="mt-8 text-center text-gray-400">
           Already have an account?{" "}

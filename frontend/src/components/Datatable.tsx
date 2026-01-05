@@ -47,7 +47,7 @@ export default function ResourcesTable({
             <tr key={resource.id} className="hover:bg-gray-750">
               <td className="px-4 py-3 text-white font-medium">{resource.title}</td>
               <td className="px-4 py-3">
-                <span className="px-2 py-1 text-xs rounded bg-indigo-600 text-white capitalize">
+                <span className="px-2 py-1 text-xs rounded bg-purple-600 text-white capitalize">
                   {resource.type}
                 </span>
               </td>
@@ -58,7 +58,7 @@ export default function ResourcesTable({
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
+                    className="text-purple-400 hover:text-purple-300 cursor-pointer"
                   >
                     Link
                   </a>
