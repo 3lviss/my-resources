@@ -189,9 +189,33 @@ export default function Edit() {
               </div>
 
               <div>
-                <label htmlFor="url" className="block text-sm font-medium text-gray-300 mb-2">
-                  URL
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label htmlFor="url" className="block text-sm font-medium text-gray-300">
+                    URL
+                  </label>
+                  {formData.url && (
+                    <a
+                      href={formData.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 text-gray-400 hover:text-purple-400 transition-colors"
+                      title="Visit URL"
+                    >
+                      <svg viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill="none" stroke="currentColor" strokeWidth="32" className="w-5 h-5">
+                        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                          <title>open-external</title>
+                          <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                            <g id="icon" fill="currentColor" transform="translate(85.333333, 64.000000)">
+                              <path d="M128,63.999444 L128,106.666444 L42.6666667,106.666667 L42.6666667,320 L256,320 L256,234.666444 L298.666,234.666444 L298.666667,362.666667 L4.26325641e-14,362.666667 L4.26325641e-14,64 L128,63.999444 Z M362.666667,1.42108547e-14 L362.666667,170.666667 L320,170.666667 L320,72.835 L143.084945,249.751611 L112.915055,219.581722 L289.83,42.666 L192,42.6666667 L192,1.42108547e-14 L362.666667,1.42108547e-14 Z" id="Combined-Shape"> </path>
+                            </g>
+                          </g>
+                        </g>
+                      </svg>
+                    </a>
+                  )}
+                </div>
                 <input
                   type="url"
                   id="url"

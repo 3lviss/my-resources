@@ -8,6 +8,7 @@ from app.core.security import get_current_user
 from app.models import User, Resource
 from app.models.resource import ResourceType
 from app.schemas import ApiResponse, ResourceOut, ResourceUpdate, ResourceCreate
+from app.services.filter_service import FilterService
 
 
 def get_user(request: Request, db: Session = Depends(get_db)) -> User:
@@ -21,24 +22,30 @@ router = APIRouter(prefix="/resources", tags=["resources"])
 def get_resources(
     page: int = Query(1, ge=1),
     per_page: int = Query(5, ge=1, le=100),
+    type: str = Query(None),
+    search: str = Query(None),
     db: Session = Depends(get_db),
     user: User = Depends(get_user)
 ):
-    query = db.query(Resource).filter(Resource.user_id == user.id)
-    total = query.count()
-    total_pages = (total + per_page - 1) // per_page
+    filter_service = FilterService(db, Resource).filter(user_id=user.id)
 
-    offset = (page - 1) * per_page
-    resources = query.order_by(Resource.updated_at.desc()).offset(offset).limit(per_page).all()
-    resources_out = [ResourceOut.model_validate(r).model_dump(mode="json") for r in resources]
+    if type:
+        filter_service = filter_service.filter(type=type)
+
+    if search:
+        filter_service = filter_service.search("title", search)
+
+    result = filter_service.sort_by("updated_at", descending=True).paginate(page=page, per_page=per_page)
+
+    resources_out = [ResourceOut.model_validate(r).model_dump(mode="json") for r in result.items]
 
     response = ApiResponse.success(
         data={
             "items": resources_out,
-            "page": page,
-            "per_page": per_page,
-            "total": total,
-            "total_pages": total_pages
+            "page": result.page,
+            "per_page": result.per_page,
+            "total": result.total,
+            "total_pages": result.total_pages
         },
         message="Resources retrieved"
     )

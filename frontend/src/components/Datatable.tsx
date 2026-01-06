@@ -45,7 +45,15 @@ export default function ResourcesTable({
         <tbody className="divide-y divide-gray-700">
           {resources.map((resource) => (
             <tr key={resource.id} className="hover:bg-gray-750">
-              <td className="px-4 py-3 text-white font-medium">{resource.title}</td>
+              <td className="px-4 py-3">
+                <button
+                  onClick={() => onEdit(resource)}
+                  className="text-white font-medium hover:text-purple-400 transition-colors cursor-pointer text-left"
+                  type="button"
+                >
+                  {resource.title}
+                </button>
+              </td>
               <td className="px-4 py-3">
                 <span className="px-2 py-1 text-xs rounded bg-purple-600 text-white capitalize">
                   {resource.type}

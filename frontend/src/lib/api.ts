@@ -53,7 +53,12 @@ export interface ResourceUpdateData {
 }
 
 export const resources = {
-  getAll: (page: number = 1) => api(`/resources?page=${page}`),
+  getAll: (page: number = 1, type?: string, search?: string) => {
+    const params = new URLSearchParams({ page: String(page) });
+    if (type) params.append("type", type);
+    if (search) params.append("search", search);
+    return api(`/resources?${params.toString()}`);
+  },
   getById: (id: string) => api(`/resources/${id}`),
   getTypes: () => api<string[]>("/resources/types"),
   create: (data: ResourceUpdateData) =>
