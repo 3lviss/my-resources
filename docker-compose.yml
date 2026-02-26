@@ -10,9 +10,13 @@ services:
     container_name: db
     env_file:
       - ./backend/.env.prod
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
+    networks:
+      - web
 
   # -----------------
   # Backend (FastAPI)
@@ -25,21 +29,38 @@ services:
     depends_on:
       - db
     restart: always
+    networks:
+      - web  # tako da nginx-proxy može routati /api
 
   # -----------------
   # Frontend (React + Vite)
   # -----------------
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=/api
     container_name: frontend
-    ports:
-      - "80:80"
+    environment:
+      - VIRTUAL_HOST=ai-driven.online
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=ai-driven.online
+      - LETSENCRYPT_EMAIL=admin@ai-driven.online
     depends_on:
       - backend
     restart: always
+    networks:
+      - web
 
 # -----------------
 # Volumes for persistent storage
 # -----------------
 volumes:
   pgdata:
+
+# -----------------
+# Networks
+# -----------------
+networks:
+  web:
+    driver: bridge
