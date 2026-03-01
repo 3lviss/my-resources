@@ -1,3 +1,5 @@
+import os  
+
 from uuid import UUID
 from fastapi import APIRouter, Depends, Request, Query
 from fastapi.responses import JSONResponse
@@ -153,4 +155,18 @@ def delete_resource(
     db.commit()
 
     response = ApiResponse.success(data=None, message="Resource deleted successfully")
+    return JSONResponse(status_code=200, content=response.model_dump())
+
+@router.get("/all")                                                                                                           
+def get_all_resources(api_key: str = Query(None), db: Session = Depends(get_db)):                                             
+    """Get all resources for n8n - requires API key"""                                                                        
+                                                                                                                            
+    ALLOWED_API_KEY = os.getenv("N8N_API_KEY")                                                                                
+    if not api_key or api_key != ALLOWED_API_KEY:                                                                             
+        response = ApiResponse.error(message="Invalid API key", status_code=401)                                              
+        return JSONResponse(status_code=401, content=response.model_dump())                                                   
+                                                                                                                            
+    resources = db.query(Resource).all()                                                                                      
+    resources_out = [ResourceOut.model_validate(r).model_dump(mode="json") for r in resources]                                
+    response = ApiResponse.success(data=resources_out, message="All resources retrieved")                                     
     return JSONResponse(status_code=200, content=response.model_dump())
