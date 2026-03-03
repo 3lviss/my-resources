@@ -1,4 +1,5 @@
-import os  
+import os
+import requests
 
 from uuid import UUID
 from fastapi import APIRouter, Depends, Request, Query
@@ -81,6 +82,14 @@ def create_resource(
     db.refresh(resource)
 
     resource_out = ResourceOut.model_validate(resource).model_dump(mode="json")
+
+    # Trigger N8n workflow to append resource to Google Sheets
+    try:
+        webhook_url = os.getenv("N8N_RESOURCE_WEBHOOK_URL")
+        requests.post(webhook_url, json=resource_out)
+    except Exception:
+        pass  # Don't fail resource creation if webhook fails
+
     response = ApiResponse.success(data=resource_out, message="Resource created successfully", status_code=201)
     return JSONResponse(status_code=201, content=response.model_dump())
 

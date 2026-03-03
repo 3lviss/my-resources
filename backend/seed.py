@@ -1,3 +1,4 @@
+import requests
 from app.core.database import SessionLocal
 from app.models import User, Resource, ResourceType
 
@@ -100,6 +101,17 @@ def seed():
 
         db.commit()
         print(f"Created {len(resources)} resources for user {user.email}")
+
+        # Trigger N8n workflow to sync resources to Google Sheets
+        try:
+            webhook_url = os.getenv("N8N_SEED_WEBHOOK_URL")
+            response = requests.post(webhook_url, json={"trigger": "seed_completed"})
+            if response.status_code == 200:
+                print("N8n workflow triggered successfully")
+            else:
+                print(f"Failed to trigger N8n workflow: {response.status_code}")
+        except Exception as e:
+            print(f"Error triggering N8n workflow: {e}")
 
     finally:
         db.close()
