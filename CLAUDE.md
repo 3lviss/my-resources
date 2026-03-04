@@ -71,3 +71,36 @@ DATABASE_URL=postgresql://user:password@localhost:5432/database_name
 - Description: 10-2000 chars
 - URL: Optional, must be http/https
 - Use case: Optional, max 1000 chars
+
+## UI Component Development Workflow
+
+### Automated Process (Every `/ui-component`)
+When you use `/ui-component [Name] [Description]`:
+1. Component is created at `frontend/src/components/[Name].tsx`
+2. **ui-ux-reviewer** automatically tests and provides feedback:
+   - Visual design & Tailwind consistency
+   - WCAG 2.1 accessibility audit
+   - Responsive design validation
+   - Screenshots and detailed recommendations
+
+### Manual Playwright Testing (On Request)
+Ask Claude: *"Test [ComponentName] interactions with Playwright"*
+- Playwright runs automated interaction tests
+- Tests keyboard navigation, clicks, responsive behavior
+- Generates test file: `frontend/src/components/[ComponentName].test.ts`
+
+**To run Playwright tests manually:**
+```bash
+cd frontend
+npx playwright test [ComponentName].test.ts
+npx playwright show-report  # View results
+```
+
+## MCP (Model Context Protocol)
+
+**Config**: `.claude/mcp.json` - Playwright MCP server (`@playwright/mcp@latest`)
+
+**Prerequisites for Playwright testing:**
+- Frontend dev server running: `npm run dev`
+- Node.js 18+ in `frontend/`
+- Playwright config: `frontend/playwright.config.ts`
