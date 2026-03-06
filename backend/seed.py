@@ -1,3 +1,4 @@
+import os
 import requests
 from app.core.database import SessionLocal
 from app.models import User, Resource, ResourceType
@@ -105,7 +106,7 @@ def seed():
         # Trigger N8n workflow to sync resources to Google Sheets
         try:
             webhook_url = os.getenv("N8N_SEED_WEBHOOK_URL")
-            response = requests.post(webhook_url, json={"trigger": "seed_completed"})
+            response = requests.get(webhook_url, json={"trigger": "seed_completed"})
             if response.status_code == 200:
                 print("N8n workflow triggered successfully")
             else:
